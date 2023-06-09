@@ -1,34 +1,31 @@
-// Global Variable goes here
-// Pipeline block
 pipeline {
-   // Agent block
-   agent { node { label 'Manage_Contact_Demo'}}
-options {
-      buildDiscarder(logRotator(numToKeepStr: '30'))
-      timestamps()
-   }
-   
-   stage('Push to Dockerhub') {
-     when { 
-       equals 
-          expected: "true", 
-          actual: '${params.PushImage}' }
-     steps {
-       script {
-         echo 'Pushing the image to docker hub'
-         def localImage = '${params.lamp:latest}:${params.2966e540ac1a6983be9b4e5bda48d97a8265a409dbe1181375d39af0eafd44de}'
-      
-         // samira is my username in the DockerHub
-         // You can use your username
-         def repositoryName = 'samira1/lamp:latest'
-      
-         // Create a tag that going to push into DockerHub
-         sh "docker tag ${localImage} ${samira1/lamp:latest} "
-         docker.withRegistry('', 'samira1/lamp:latest') {
-           def image = docker.image('${samira1/lamp:latest}');
-           image.push()
-         }
-       }
+  agent any
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '5'))
+  }
+  environment {
+    DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+  }
+  stages {
+    stage('Build') {
+      steps {
+        sh 'docker build -t samira1/jenkins-docker-hub .'
+      }
+    }
+    stage('Login') {
+      steps {
+        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+      }
+    }
+    stage('Push') {
+      steps {
+        sh 'docker push samira1/jenkins-docker-hub'
+      }
+    }
+  }
+  post {
+    always {
+      sh 'docker logout'
     }
   }
 }
