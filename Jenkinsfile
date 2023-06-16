@@ -9,7 +9,8 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh 'docker build -t samira1/lamp .'
+        sh 'docker build -t my_image .'
+        sh 'samira1/lamp'
       }
     }
     stage('Login') {
