@@ -9,7 +9,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh 'docker build -t samira_marzouki0 / jenkins-docker-hub .'
+        sh 'docker build -t samira1/lamp .'
       }
     }
     stage('Login') {
@@ -19,7 +19,7 @@ pipeline {
     }
     stage('Push') {
       steps {
-        sh 'samira_marzouki0 / jenkins-docker-hub'
+        sh 'samira1/lamp'
       }
     }
   }
